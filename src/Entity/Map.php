@@ -61,7 +61,7 @@ class Map
         }
         
         // We place the border
-        $this->createSeaBorder(1);
+        $this->createSeaBorder($this->seaBorderWidth);
         
         // We put the mountains
         $this->createMountains();
@@ -78,28 +78,24 @@ class Map
      * 
      * @param int $borderWidth
      */
-    private function createSeaBorder(int $borderWidth = 1)
-    {
-        /**
-         * If Border is too small (<1) or too big (bigger than height or width)
-         * Then reset to default value
-         */
-        if($borderWidth < 1 || $borderWidth > $this->height || $borderWidth > $this->width)
-            $borderWidth = 1;
-        
-        // Top & bottom
+    private function createSeaBorder(int $borderWidth = 1, int $spread=2)
+    {     
         for($line = 0 ; $line < $this->height; $line++ ) 
         {
             for( $column = 0; $column < $this->width; $column++ )
             {
-                if ($line >= $borderWidth && $line < $this->height - $borderWidth && $column >= $borderWidth && $column < $this->width - $borderWidth)
+                $distances = Navigator::getDistanceToBorder($this, $this->cells[$line][$column]);
+                $distance = min($distances);
+                $pourcentage = (int) (100*(log(1-($distance)/($borderWidth+$spread))+1));
+                $luck = mt_rand(0,99);
+                
+                if($luck < $pourcentage)  
                 {
-                    continue;
+                    $this->cells[$line][$column] = new Cell($column, $line, new CellType(CellTypeEnum::$WATER));
                 }
-                $this->cells[$line][$column] = new Cell($column, $line, new CellType(CellTypeEnum::$WATER));
+
             }
         }
-        
     }
     
     private function createMountains(array $positions = array())
@@ -107,13 +103,15 @@ class Map
         if(empty($positions))
         {
               $positions = array();
-              $iterations = 5; // Number of mountain we want to generate
-              for($i = 0; $i < $iterations; $i++){
+              $iterations = 10; // Number of mountain we want to generate
+              do{
                   $positions[] = $this->getCell(
                       random_int($this->seaBorderWidth, $this->getHeight()-$this->getSeaBorderWidth()-1),   // Random Line
-                      random_int($this->seaBorderWidth, $this->getWidth()-$this->getSeaBorderWidth()-1)     // Random Column
+                      random_int($this->seaBorderWidth, $this->getWidth() -$this->getSeaBorderWidth()-1)    // Random Column
                       );
-              }
+
+              }while(count($positions) < $iterations);
+              
         }
         $this->mountains = $positions;
         /**

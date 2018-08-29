@@ -3,39 +3,14 @@
 {% block title %}Map!{% endblock %}
 
 {% block body %}
-<ul>
-    <li>Sea border width : {{ map.seaBorderWidth }}</li>
-    <li>Width : {{ map.Width }}</li>	
-    <li>Height : {{ map.height }}</li>	
-</ul>
-<h2>Mountains</h2>
-<ul>
-{% for mountain in map.mountains%}
-    <li>x: {{ mountain.x }}; y: {{ mountain.y }}</li>
-{% endfor %}
-</ul>
 
-<h2></h2>
+<h1>Map</h1>
 {% spaceless %}
     {% for lineIndex in 0..map.height-1 %}
-        {% if loop.first %}
-        	<div class="x_coordinate" style="height:{{ size }}px;">
-        	{% for columnIndex in 0..map.width-1 %}
-        		<span style="border:1px dashed grey; min-width:{{ size }}px; display: inline-block; height: 100%;">
-        	        {{ columnIndex }}
-        		</span>
-        	{% endfor %}
-        	</div>
-        {% endif %}
     	<div class="line" style="height:{{ size }}px;">
         {% for columnIndex in 0..map.width-1 %}
         	<span class="cell {{ map.getCell(lineIndex, columnIndex).type.name}}" style="min-width:{{ size }}px; display: inline-block; height: 100%;">
         	</span>
-        	{% if loop.last %}
-        		<span style="border:1px dashed grey; min-width:{{ size }}px; display: inline-block; height: 100%;">
-        	        {{ lineIndex }}
-        		</span>
-    		{% endif %}
         {% endfor %}
     	</div> {# Closing line #}
     {% endfor %}

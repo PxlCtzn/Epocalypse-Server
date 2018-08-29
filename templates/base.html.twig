@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}
+        	<style type="text/css">
+        	.cell{
+        		border:1px dashed pink;
+        	}
+        	.water {
+                background-color: #125678;
+            }
+        	.desert {
+                background-color: #c6b689;
+            }
+        	.forest {
+                background-color: #337554;
+            }
+        	.mountain {
+                background-color: #fefefe;
+            }
+        	.field {
+                background-color: #559745;
+            }
+        	.unknown {
+                background-color: grey;
+            }
+        	</style>
+        {% endblock %}
+    </head>
+    <body>
+        {% block body %}{% endblock %}
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

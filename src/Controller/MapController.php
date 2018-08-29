@@ -13,11 +13,11 @@ class MapController extends AbstractController
      */
     public function index()
     {
-        $map = new Map(25, 25, array(), 7);
+        $map = new Map(150, 150, [], 60);
         
         return $this->render('map/index.html.twig', [
             'map' => $map,
-            'size' => '16'
+            'size' => '5'
         ]);
     }
 }

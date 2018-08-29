@@ -21,10 +21,10 @@ class Navigator
      */
     public static function getDistanceToBorder(Map $m, Cell $c): array
     {
-        return [$c->getX(), //Distance to the border on top
-            $m->getWidth()-1  - $c->getY(), //Distance to the border on the right
-            $m->getHeight()-1 - $c->getX(), //Distance to the border on bottom
-            $c->getY()];    //Distance to the border on the left
+        return [$c->getY(), //Distance to the border on top
+            $m->getWidth()-1  - $c->getX(), //Distance to the border on the right
+            $m->getHeight()-1 - $c->getY(), //Distance to the border on bottom
+            $c->getX()];    //Distance to the border on the left
     }
     
     /**

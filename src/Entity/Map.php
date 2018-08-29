@@ -45,8 +45,13 @@ class Map
     
     private $forests = array();
     
+    public static $UNKNOWN_CELL;
+    public static $WATER_CELL;
+    
     public function __construct(int $width, int $height, array $mountainPositions=array(),  int $seaBorderWidth=1 )
     {
+        self::$UNKNOWN_CELL = new CellType(CellTypeEnum::$UNKNOWN);
+        self::$WATER_CELL = new CellType(CellTypeEnum::$WATER);
         $this->width    = $width;
         $this->height   = $height;
 
@@ -56,7 +61,7 @@ class Map
         
         for($l = 0 ; $l < $height; $l++){
             for($c = 0 ; $c < $width; $c++){
-                $this->cells[$l][$c] = new Cell($c, $l, new CellType(CellTypeEnum::$UNKNOWN));
+                $this->cells[$l][$c] = new Cell($c, $l, self::$UNKNOWN_CELL);
             }
         }
         
@@ -70,7 +75,7 @@ class Map
         $this->checkForests();
         
         // We complete the map
-        $this->paintMap();
+        //$this->paintMap();
     }
 
     /**
@@ -78,7 +83,7 @@ class Map
      * 
      * @param int $borderWidth
      */
-    private function createSeaBorder(int $borderWidth = 1, int $spread=2)
+    private function createSeaBorder(int $borderWidth = 1, $spread=6)
     {     
         for($line = 0 ; $line < $this->height; $line++ ) 
         {
@@ -86,17 +91,18 @@ class Map
             {
                 $distances = Navigator::getDistanceToBorder($this, $this->cells[$line][$column]);
                 $distance = min($distances);
-                $pourcentage = (int) (100*(log(1-($distance)/($borderWidth+$spread))+1));
+                $pourcentage = (int) (100*(log(1-($distance)/($borderWidth))+1));
                 $luck = mt_rand(0,99);
                 
                 if($luck < $pourcentage)  
                 {
-                    $this->cells[$line][$column] = new Cell($column, $line, new CellType(CellTypeEnum::$WATER));
+                    $this->cells[$line][$column] = new Cell($column, $line, self::$WATER_CELL);
                 }
 
             }
         }
     }
+
     
     private function createMountains(array $positions = array())
     {

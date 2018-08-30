@@ -5,7 +5,7 @@ namespace App\Entity;
 class CellTypeEnum
 {
     public static $WATER    = "water";  
-    public static $FIELD    = "field";
+    public static $PLAIN    = "plain";
     public static $FOREST   = "forest";
     public static $DESERT   = "desert";    
     public static $MOUNTAIN = "mountain";    

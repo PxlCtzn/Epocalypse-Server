@@ -75,7 +75,7 @@ class Map
         $this->checkForests();
         
         // We complete the map
-        //$this->paintMap();
+        $this->paintMap();
     }
 
     /**
@@ -190,9 +190,9 @@ class Map
                  */
                 $cell = $this->cells[$line][$column];
                 if($cell->isType(CellTypeEnum::$UNKNOWN)){
-                    
+                    $this->cells[$line][$column] = new Cell($column, $line, new CellType(CellTypeEnum::$PLAIN));
                 }
-                //$this->cells[$line][$column] = new Cell($column, $line, new CellType(CellTypeEnum::$WATER));
+                //
             }
         }
     }

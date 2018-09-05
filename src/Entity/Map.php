@@ -4,15 +4,24 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Controller\Navigator;
+use App\Helpers\Navigator;
+use App\Helpers\CellTypeFactory;
+
 /**
- *
+ * Class Map
+ * 
+ * 
  * @ORM\Entity(repositoryClass="App\Repository\MapRepository")
+ * 
+ * @author PxlCtzn
+ * 
+ * @namespace App\Entity
  */
 class Map
 {
     /**
-     *
+     * @var int Map's unique Id
+     * 
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -20,155 +29,248 @@ class Map
     private $id;
 
     /**
-     *
+     * @var int Map's width (i.e: number of cells per line)
+     * 
      * @ORM\Column(type="integer")
      */
     private $width;
     
     /**
-     *
+     * @var int Map's height (i.e: number of line of cells)
+     * 
      * @ORM\Column(type="integer")
      */
-    private $height;
-    
-    private $seaBorderWidth;
-    
-
-
+    private $height; 
 
     /**
+     * @var array|Collection The map's cells.
+     * 
      * @ORM\OneToMany(targetEntity="App\Entity\Cell", mappedBy="map", orphanRemoval=true)
      */
     private $cells;
 
+    
+    /**
+     * @var int Thickness of the sea at the edge of the map.
+     */
+    private $seaThickness;
+    
+    private $waters = array();
+    
+    /** 
+     * TODO find a better solution
+     * 
+     * @var array 
+     */
     private $mountains = array();
     
+    /**
+     * TODO find a better solution
+     *  
+     * @var array
+     */
     private $forests = array();
-    
-    public static $UNKNOWN_CELL;
-    public static $WATER_CELL;
-    
-    public function __construct(int $width, int $height, array $mountainPositions=array(),  int $seaBorderWidth=1 )
+
+    public function __construct(int $width, int $height, array $mountainPositions=array(),  int $seaThickness=1 )
     {
-        self::$UNKNOWN_CELL = new CellType(CellTypeEnum::$UNKNOWN);
-        self::$WATER_CELL = new CellType(CellTypeEnum::$WATER);
         $this->width    = $width;
         $this->height   = $height;
 
-        $this->seaBorderWidth = $seaBorderWidth;
+        $this->seaThickness = $seaThickness;
         
+        // Fills the map with unknown cells
+        $this->initiateMap();
+        
+        // We place the border (which will also create the plain)
+        $this->createSeaBorder();
+        
+        // We put the mountains (which will also create the forest)
+        $this->createMountains();
+
+        // We will also create the forest
+        $this->createDeserts();
+    }
+
+    /**
+     * Initiates the map by setting all its cell with the CellTypeEnum::UNKNOWN type.
+     * 
+     * @return self
+     */
+    private function initiateMap(): self
+    {
         $this->cells = array();
         
-        for($l = 0 ; $l < $height; $l++){
-            for($c = 0 ; $c < $width; $c++){
-                $this->cells[$l][$c] = new Cell($c, $l, self::$UNKNOWN_CELL);
+        for($l = 0 ; $l < $this->height; $l++){
+            for($c = 0 ; $c < $this->width; $c++){
+                    $this->cells[$l][$c] = new Cell($c, $l, CellTypeFactory::createCellType(CellTypeEnum::UNKNOWN), $this);
             }
         }
         
-        // We place the border
-        $this->createSeaBorder($this->seaBorderWidth);
-        
-        // We put the mountains
-        $this->createMountains();
-        
-        // We put the mountains
-        $this->checkForests();
-        
-        // We complete the map
-        $this->paintMap();
+        return $this;
     }
 
     /**
      * Generates the sea border
      * 
-     * @param int $borderWidth
+     * @param int $borderThickness
+     * @param int $spread
      */
-    private function createSeaBorder(int $borderWidth = 1, $spread=6)
+    private function createSeaBorder(int $spread=0)
     {     
-        for($line = 0 ; $line < $this->height; $line++ ) 
+        $spread = ($spread < 0) ? 0 : $spread;
+        
+        for($line = 0 ; $line < $this->height; $line++ ) // For every line ...
         {
-            for( $column = 0; $column < $this->width; $column++ )
+            for( $column = 0; $column < $this->width; $column++ ) // ... in every column ...
             {
-                $distances = Navigator::getDistanceToBorder($this, $this->cells[$line][$column]);
-                $distance = min($distances);
-                $pourcentage = (int) (100*(log(1-($distance)/($borderWidth))+1));
+                /** @var Cell $cell */
+                $currentCell = $this->cells[$line][$column]; // ... we get the current cell.
+                $distances = Navigator::getDistanceToBorder($this, $currentCell); // We get the distance from the cell to the four edge.
+                $minDistance = min($distances);
+                $pourcentage = (int) (100*(log(1-($minDistance)/($this->seaThickness+$spread))+1));
                 $luck = mt_rand(0,99);
                 
                 if($luck < $pourcentage)  
                 {
-                    $this->cells[$line][$column] = new Cell($column, $line, self::$WATER_CELL);
+                    $this->waters[] = $currentCell->setType(CellTypeFactory::createCellType(CellTypeEnum::WATER));
                 }
 
             }
         }
+        
+        $this->createBeach();
     }
-
     
-    private function createMountains(array $positions = array())
+    /**
+     * 
+     */
+    private function createBeach()
     {
-        if(empty($positions))
+        /** @var Cell $waterCell */
+        foreach($this->waters as $waterCell) // For each water cell ...
         {
-              $positions = array();
-              $iterations = 10; // Number of mountain we want to generate
-              do{
-                  $positions[] = $this->getCell(
-                      random_int($this->seaBorderWidth, $this->getHeight()-$this->getSeaBorderWidth()-1),   // Random Line
-                      random_int($this->seaBorderWidth, $this->getWidth() -$this->getSeaBorderWidth()-1)    // Random Column
-                      );
-
-              }while(count($positions) < $iterations);
-              
+            $neighbors = Navigator::getCellNeighbors($this, $waterCell); // ... we get its neighbors ...
+            
+            foreach($neighbors as $neighbor) // and for each neighbor ...
+            {
+                if($neighbor->isType(CellTypeEnum::UNKNOWN)) // ... if it's type is UNKNOWN ...
+                {
+                    $neighbor->setType(CellTypeFactory::createCellType(CellTypeEnum::PLAIN)); // ... we set it to PLAIN.
+                }
+            }
         }
+    }
+    
+    /**
+     * Generate mountains and modify its neighbors according to specific rules.
+     * If no mountain position is given, then we generate some according to the iteration parameter (default value 25).
+     * 
+     * @param array $positions
+     * @param int $iterations
+     */
+    private function createMountains(array $positions = array(), int $iterations = 25)
+    {
+        if(empty($positions)) // If no positions given ...
+        {
+            $iterations     = ($iterations < 0) ? 25 : $iterations; // ... we check the $iterations value (i.e: If iterations value is below 0, then get default value) ... 
+            $margin         = array('top' => $this->seaThickness, 'right' => $this->seaThickness, 'bottom' => $this->seaThickness, 'left' =>$this->seaThickness);
+            $positions      = Navigator::getRandomCells($this, $iterations, $margin, array(CellTypeEnum::PLAIN, CellTypeEnum::WATER)); // ... we get some from the map. 
+        }
+        
         $this->mountains = $positions;
+        
+        /** @var Cell $cell */
+        foreach($this->mountains as $cell) // For each cell ... 
+        {
+            $cell->setType(CellTypeFactory::createCellType(CellTypeEnum::MOUNTAIN)); // ... we set its type to MOUNTAIN
+        }
+        $this->updateCellTypeIfBetweenTwoSameCellType(CellTypeEnum::UNKNOWN, array(CellTypeEnum::UNKNOWN, CellTypeEnum::WATER)); // If 2 MOUNTAIN are separeted by one UNKNOW CELL, then this UNKNOW CELL is set to MOUNTAIN. We don't want to change WATER AND U
+        
+        // and update the neighbors
+        $this->setTypeCellsNeighbors( $this->mountains, CellTypeFactory::createCellType(CellTypeEnum::FOREST), array(CellTypeEnum::WATER, CellTypeEnum::MOUNTAIN, CellTypeEnum::PLAIN) );
+        $this->updateCellTypeIfBetweenTwoSameCellType(CellTypeEnum::UNKNOWN, array(CellTypeEnum::UNKNOWN, CellTypeEnum::WATER, CellTypeEnum::MOUNTAIN));
+        
+    }
+    
+    /**
+     * Set the type of the neighbors of the cell given in parameter 
+     * to the CellType specified unless the neighbor's type is in the given array.
+     * 
+     * @param array     $cells          The cell we want to update the neighbors of.
+     * @param CellType  $newType        The cell type we want to use for the neighbors
+     * @param array     $typeExceptions The types that must stay unchange
+     * @param int       $radius         The radius of the neighborhood
+     * 
+     * @return self
+     */
+    private function setTypeCellsNeighbors(array $cells, CellType $newType,  array $cellTypeExceptions = array(CellTypeEnum::WATER), int $radius=1): self
+    {
+        $radius = ($radius < 1) ? 1: $radius; // If $radius value is neg. or zero, then get default value
+        
         /**
          * @var Cell $cell
          */
-        foreach($this->mountains as $cell)
+        foreach($cells as $cell) // For each cell ...
         {
-            $cell->setType(new CellType(CellTypeEnum::$MOUNTAIN));
             
-            $neigbhors = Navigator::getCellNeighbors($this, $cell);
+            $neighbors = Navigator::getCellNeighbors($this, $cell); // ... we get its neighbors ...
             
-            foreach($neigbhors as $neigbhorCell)
+            foreach($neighbors as $neighbor) // ... and for each of the neighbors ...
             {
-                if($neigbhorCell->isType(CellTypeEnum::$WATER) || $neigbhorCell->isType(CellTypeEnum::$MOUNTAIN)){
-                    continue;
+                if(in_array($neighbor->getType()->getName(), $cellTypeExceptions)) // ... if the neighbor's type is in the Exception list ...
+                {
+                    continue; // ... we skip it.
                 }
-                $this->forests[] = $neigbhorCell->setType(new CellType(CellTypeEnum::$FOREST));
+                $this->forests[] = $neighbor->setType($newType); // ... else we set the neighbor type to FOREST and save it for later (checkForest())
             }
             
         }
+        
+        return $this;
     }
     
-    private function checkForests(): void
+    
+    /**
+     * Scans the map AND
+     * IF a cell's type is equals to the one given AND
+     * both of EITHER top AND bottom OR left AND right cells have the same type AND
+     * the type of the couple of cells is not blacklisted
+     * THEN the cell's type is update with the one of its neigbors.
+     * 
+     * Priority is given to the top and bottom (i.e: if top's type == bottom's type then the right and left cells are ignored).
+     * 
+     * @return self
+     */
+    private function updateCellTypeIfBetweenTwoSameCellType(string $cellType, array $blacklistCellType = array()): self
     {
-        $rebake = false;
         do{
-            $rebake = false;
+            $rebake = false; //
             
-            // Top & bottom
             for($line = 0 ; $line < $this->height; $line++ )
             {
                 for( $column = 0; $column < $this->width; $column++ )
                 {
-                    /**
-                     * @var Cell $c
-                     */
-                    $c = $this->cells[$line][$column];
-                    if($c->isType(CellTypeEnum::$UNKNOWN))
+                    /** @var Cell $currentCell */
+                    $currentCell = $this->cells[$line][$column];
+                    
+                    if($currentCell->isType($cellType))
                     {
-                        $top    = Navigator::getTopCell($this, $c);
-                        $bottom = Navigator::getBottomCell($this, $c);
-                        $left   = Navigator::getLeftCell($this, $c);
-                        $right  = Navigator::getRightCell($this, $c);
+                        $top    = Navigator::getTopCell($this,      $currentCell);
+                        $bottom = Navigator::getBottomCell($this,   $currentCell);
                         
-                        if((!is_null($top) && !is_null($bottom) && 
-                            $top->isType(CellTypeEnum::$FOREST) && $bottom->isType(CellTypeEnum::$FOREST))||
-                            (!is_null($left) && !is_null($right) &&
-                                $left->isType(CellTypeEnum::$FOREST) && $right->isType(CellTypeEnum::$FOREST)))
+                        $left   = Navigator::getLeftCell($this,     $currentCell);
+                        $right  = Navigator::getRightCell($this,    $currentCell);
+                        
+                        if(!is_null($top) && !is_null($bottom) && $top->isType($bottom->getType()) && !in_array($top->getType(), $blacklistCellType))
                         {
                             $rebake = true;
-                            $c->setType(new CellType(CellTypeEnum::$FOREST));
+                            $currentCell->setType($top->getType());
+                            continue;
+                        }
+                        elseif(!is_null($left) && !is_null($right) && $left->isType($right->getType()) && !in_array($left->getType(), $blacklistCellType))
+                        {
+                            $rebake = true;
+                            $currentCell->setType($right->getType());                            
                             continue;
                         }
                     }
@@ -176,9 +278,12 @@ class Map
                 }
             }
         }while($rebake);
+
+        return $this;
     }
     
-    private function paintMap()
+    
+    private function createDeserts()
     {
         for($line = 0 ; $line < $this->height; $line++ )
         {
@@ -189,8 +294,8 @@ class Map
                  * @var Cell $cell
                  */
                 $cell = $this->cells[$line][$column];
-                if($cell->isType(CellTypeEnum::$UNKNOWN)){
-                    $this->cells[$line][$column] = new Cell($column, $line, new CellType(CellTypeEnum::$PLAIN));
+                if($cell->isType(CellTypeEnum::UNKNOWN)){
+                    $this->cells[$line][$column]->setType(new CellType(CellTypeEnum::DESERT));
                 }
                 //
             }
@@ -226,16 +331,24 @@ class Map
         return $this;
     }
 
+    /**
+     * Returns a the cell on the given line and column.
+     * 
+     * @param int $line     Index of the line
+     * @param int $column   Index of the column
+     * @return Cell
+     */
     public function getCell( int $line, int $column): Cell
     {
         return $this->cells[$line][$column];
     }
+    
     /**
      * @return integer
      */
-    public function getSeaBorderWidth()
+    public function getSeaThickness()
     {
-        return $this->seaBorderWidth;
+        return $this->seaThickness;
     }
 
     /**

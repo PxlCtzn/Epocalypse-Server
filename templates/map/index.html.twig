@@ -7,10 +7,20 @@
 <h1>Map</h1>
 {% spaceless %}
     {% for lineIndex in 0..map.height-1 %}
-    	<div class="line" style="height:{{ size }}px;">
+        {% if loop.first %}
+        	<div class="line">
+        	{% for columnIndex in 0..map.width-1 %}
+        		<span class="coordinate">{{ columnIndex }}</span>
+        	{% endfor %}
+        	</div>
+        {% endif %}
+    	<div class="line">
         {% for columnIndex in 0..map.width-1 %}
-        	<span class="cell {{ map.getCell(lineIndex, columnIndex).type.name}}" style="min-width:{{ size }}px; display: inline-block; height: 100%;">
+        	<span class="cell {{ map.getCell(lineIndex, columnIndex).type.name}}">
         	</span>
+        	{% if loop.last %}
+        		<span class="coordinate">{{ lineIndex }}</span>
+    		{% endif %}
         {% endfor %}
     	</div> {# Closing line #}
     {% endfor %}

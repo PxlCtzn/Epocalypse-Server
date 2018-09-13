@@ -1,6 +1,6 @@
 # Epocalypse-Server
 
-** tl;dr ** : It is the Server side (duh!) of the Epocalypse game. 
+**_tl;dr_** : It is the Server side (_duh!_) of the Epocalypse game. 
 It's running under Symfony 4. 
 This project is under GPL v3 (get over it). 
 
@@ -13,7 +13,7 @@ The Epocalypse-Server will provides an API to play with so everyone can create h
  * Generating random map
 
 ## Todo list
- * Create a voronoi map generator (see [this link](http://www-cs-students.stanford.edu/~amitp/game-programming/polygon-map-generation/#polygons)
+ * Create a voronoi map generator (see [this link]( http://www-cs-students.stanford.edu/~amitp/game-programming/polygon-map-generation/#polygons))
 
 ## License
 This program is free software: you can redistribute it and/or modify it under 

@@ -4,46 +4,16 @@
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
         {% block stylesheets %}
-        	<style type="text/css">
-        	.line{
-        		height: {{size}}px;
-        	}
-        	.cell{
-        		 border:1px dashed white;
-        		 display: inline-block; 
-        		 height: 100%;
-        		 min-width:{{ size }}px;
-        	}
-        	.coordinate{
-				border:1px dashed grey; 
-				display: inline-block; 
-				height: 100%;
-				font-size:x-small;
-				min-width:{{ size }}px; 
-        	}
-        	.water {
-                background-color: #125678;
-            }
-        	.desert {
-                background-color: #c6b689;
-            }
-        	.forest {
-                background-color: #337554;
-            }
-        	.mountain {
-                background-color: #fefefe;
-            }
-        	.plain {
-                background-color: #559745;
-            }
-        	.unknown {
-                background-color: grey;
-            }
-        	</style>
         {% endblock %}
     </head>
     <body>
+        <h1>Epocalypse</h1>
+        {% include 'partials/menu.html.twig' %}
+
         {% block body %}{% endblock %}
+        <footer>
+            <p>{{ app_name }} version : {{ app_version }} - <a href="{{ app_git_url }}">Check this project on github</a></p>
+        </footer>
         {% block javascripts %}{% endblock %}
     </body>
 </html>

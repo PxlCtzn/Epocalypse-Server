@@ -1,3 +1,16 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
+
+
+rest_controller:
+    resource: '../src/Controller/API/'
+    type: annotation
+    prefix: /api
+    name_prefix: api_
+    trailing_slash_on_root: false
+
+web_controller:
+    resource: '../src/Controller/Web/'
+    type: annotation
+    name_prefix: web_

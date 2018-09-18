@@ -23,8 +23,7 @@ use App\Helpers\Navigator;
  * 
  * @ORM\Entity(repositoryClass="App\Repository\CellRepository")
  * 
- * @namespace App\Entity
- * @author PxlCtzn
+ * @package App\Entity
  */
 class Cell
 {

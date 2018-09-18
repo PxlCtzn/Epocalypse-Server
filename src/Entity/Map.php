@@ -24,6 +24,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Helpers\Navigator;
 use App\Helpers\CellTypeFactory;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
  * Class Map
@@ -33,10 +34,16 @@ use App\Helpers\CellTypeFactory;
  * 
  * @author PxlCtzn
  * 
- * @namespace App\Entity
+ * @package App\Entity
  */
 class Map
 {
+    /**
+     * Hook timestampable behavior
+     * updates createdAt, updatedAt fields
+     */
+    use TimestampableEntity;
+
     /**
      * @var int Map's unique Id
      * 

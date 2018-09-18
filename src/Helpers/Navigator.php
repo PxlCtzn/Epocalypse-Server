@@ -24,7 +24,7 @@ use App\Entity\Cell;
 
 /**
  * Class Navigator
- * 
+ *
  * @author PxlCtzn
  */
 class Navigator

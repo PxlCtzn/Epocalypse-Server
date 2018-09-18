@@ -18,23 +18,23 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace App\Helpers;
+namespace App\Helpers\Factories;
 
 use App\Entity\CellTypeEnum;
 use App\Entity\CellType;
+use App\Entity\Map;
 
 /**
  *
  * @author PxlCtzn
- *        
+ *
+ * @package App\Helpers\Factories
  */
-class CellTypeFactory
+class MapFactory
 {
 
-    private static $CELL_TYPE_GENERATED = array();
-    
     /**
-     * Disable Contructor
+     * Disable public constructor
      */
     private function __construct()
     {}
@@ -43,7 +43,7 @@ class CellTypeFactory
      * 
      * @param string $name
      * 
-     * @return CellType|NULL
+     * @return Map
      */
     public static function createCellType(string $name): ?CellType
     {

@@ -1,10 +1,47 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Map!{% endblock %}
-
+{% block stylesheets %}
+	<style type="text/css">
+		.line{
+			height: {{size}}px;
+		}
+		.cell{
+			border:1px dashed white;
+			display: inline-block;
+			height: 100%;
+			min-width:{{ size }}px;
+		}
+		.coordinate{
+			border:1px dashed grey;
+			display: inline-block;
+			height: 100%;
+			font-size:x-small;
+			min-width:{{ size }}px;
+		}
+		.water {
+			background-color: #125678;
+		}
+		.desert {
+			background-color: #c6b689;
+		}
+		.forest {
+			background-color: #337554;
+		}
+		.mountain {
+			background-color: #fefefe;
+		}
+		.plain {
+			background-color: #559745;
+		}
+		.unknown {
+			background-color: grey;
+		}
+</style>
+{% endblock %}
 {% block body %}
 
-<h1>Map</h1>
+<h2>Map #{{ map.id }}</h2>
 {% spaceless %}
     {% for lineIndex in 0..map.height-1 %}
         {% if loop.first %}

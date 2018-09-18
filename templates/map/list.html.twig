@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Epocalypse maps list.{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block body %}
+
+<h2>Epocalypse Maps list</h2>
+{% if maps|length > 0 %}
+<table style="width:100%">
+    <tr>
+        <th>ID</th>
+        <th>Width</th>
+        <th>Height</th>
+        <th>Created at</th>
+        <th>Show</th>
+        <th>Delete</th>
+    </tr>
+    <tr>
+        <td>Eve</td>
+        <td>Jackson</td>
+        <td>94</td>
+    </tr>
+</table>
+    {% for map in maps %}
+        <tr>
+            <th>{{ map.id }}</th>
+            <th>{{ map.width }}</th>
+            <th>{{ map.height }}</th>
+            <th>{{ map.createdAt }}</th>
+            <th>{{ path('web_map_show',     {'id' : map.id}) }}</th>
+            <th>{{ path('web_map_delete',   {'id' : map.id}) }}</th>
+        </tr>
+{% endfor %}
+</table>
+{% else %}
+    <p><b>No map found in the database</b></p>
+{% endif %}
+{% endblock %}

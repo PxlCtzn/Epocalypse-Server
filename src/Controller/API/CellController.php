@@ -17,23 +17,37 @@
  * You should have received a copy of the GNU General Public License along with this program.
  * If not, see <https://www.gnu.org/licenses/>.
  */
-namespace App\DataFixtures;
+namespace App\Controller\API;
 
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\Persistence\ObjectManager;
-use App\Entity\CellType;
-use App\Entity\CellTypeEnum;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\Routing\Annotation\Route;
 
-class CellTypeFixtures extends Fixture
-{   
-    public function load(ObjectManager $manager)
+use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Response;
+
+
+use App\Entity\Cell;
+
+/**
+ * Class CellController
+ *
+ * @package App\Controller\API
+ *
+ * @Route("/cell", name="cell_")
+ */
+class CellController extends FOSRestController
+{
+    /**
+     * @param Request $request
+     *
+     * @Rest\Get(
+     *     path = "/{id}",
+     *     name = "get_info"
+     * )
+     */
+    public function getCell(Cell $cell): View
     {
-        $cellTypeNames = CellTypeEnum::getAllTypeAsArray();
-
-        foreach( $cellTypeNames as $name){
-            $manager->persist(new CellType($name));
-        }
-
-        $manager->flush();
+        return View::create($cell, Response::HTTP_OK);
     }
 }

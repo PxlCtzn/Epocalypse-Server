@@ -28,12 +28,13 @@ namespace App\Entity;
  */
 class CellTypeEnum
 {
-    public const WATER    = "water";  
+    public const WATER    = "water";
     public const PLAIN    = "plain";
     public const FOREST   = "forest";
     public const DESERT   = "desert";    
     public const MOUNTAIN = "mountain";    
-    public const UNKNOWN  = "unknown";    
+    public const CITY     = "city";
+    public const UNKNOWN  = "unknown";
 
     /**
      * Disables public constructor
@@ -49,20 +50,23 @@ class CellTypeEnum
      * 
      * @return boolean true if valid, else false.
      */
-    public static function isValidType(string $candidate)
+    public static function isValidType(string $candidate): bool
     {
-        switch ($candidate)
-        { // TODO Dirty as fuck
-            case self::WATER:
-            case self::PLAIN:
-            case self::FOREST:
-            case self::DESERT:
-            case self::MOUNTAIN:
-            case self::UNKNOWN:
-                return true;
-            default:
-                return false;
-        }
+        $cellTypeEnumClass = new \ReflectionClass(self::class);
+
+        return $cellTypeEnumClass->hasConstant($candidate);
+    }
+
+    /**
+     * Gets all defined cell types.
+     *
+     * @return array    An array of constants, where the keys hold the name and the values the value of the constants.
+     */
+    public static function getAllTypeAsArray(): array
+    {
+        $cellTypeEnumClass = new \ReflectionClass(self::class);
+
+        return $cellTypeEnumClass->getConstants();
     }
 }
 

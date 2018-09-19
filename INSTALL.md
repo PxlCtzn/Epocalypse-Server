@@ -1,9 +1,39 @@
-# Installing Epocalypse-Server 
+# Installing Epocalypse-Server for Dev 
 
-**tl;dr**: 
-1. git clone https://github.com/PxlCtzn/Epocalypse-Server
-2. composer install
-3. Update your Apache/Nginx configuration.
+Run the following command into a terminal
+
+```
+$ cd Path/To/The/Directory/You/Want
+$ git clone https://github.com/PxlCtzn/Epocalypse-Server
+$ cd Epocalypse-Server
+$ composer install
+$ cp .env.dist .env
+$ vim .env
+```
+Now you can set the following parameters :
+* __APP_ENV__ with one of the following value : _dev_
+* __DATABASE_URL__ with something like __mysql://db_user:db_password@127.0.0.1:3306/db_name__ or __sqlite:///%kernel.project_dir%/var/data.db__
+
+and save your change.
+
+Now you can create the database :
+
+```
+$ php bin/console doctrine:database:create
+$ php bin/console doctrine:schema:create
+$ php bin/console doctrine:fixtures:load
+
+```
+ 
+And then start the dev server :
+
+```
+$ php bin/console server:run
+
+```
+Open the given link into your favorite browser!
+
+ __VOILA !__ 
 
 ## Requirements
 

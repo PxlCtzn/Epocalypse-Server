@@ -1,0 +1,8 @@
+<label for="map_algorithim_selector">Select the algorithm :</label>
+<select id="map_algorithm_selector" name="map_algorithm_selector" autofocus=true onchange='updateForm()'>
+	<option value="none" selected></option>
+	{% for algorithm in algorithms %}
+		<option value={{ algorithm.className }}>{{ algorithm.name }}</option>
+	{% endfor %}
+</select>
+

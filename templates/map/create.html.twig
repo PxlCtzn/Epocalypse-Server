@@ -4,5 +4,10 @@
 
 {% block body %}
     <h2>Map generator</h2>
+    {{ include('partials/map_algortihm_selector.html.twig') }}
+    {#{{ form(form) }}#}
+{% endblock %}
 
+{% block javascripts_footer %}
+<script src="/public/js/map_algorithm_selector.js"></script>
 {% endblock %}

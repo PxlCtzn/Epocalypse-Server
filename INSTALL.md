@@ -25,6 +25,13 @@ $ php bin/console doctrine:fixtures:load
 
 ```
  
+
+Don't forget to update the JS routing file:
+
+```
+$ php  bin/console fos:js-routing:dump --format=json --target=public/js/fos_js_routes.json
+```
+
 And then start the dev server :
 
 ```

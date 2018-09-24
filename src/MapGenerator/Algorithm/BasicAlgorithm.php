@@ -25,7 +25,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Helpers\Navigator;
 use App\Helpers\Factories\CellTypeFactory;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use App\MapGenerator\Algorithm\MapAlgorithm;
+use App\MapGenerator\Algorithm\MapAlgorithmAbstract;
 use App\Entity\Cell;
 use App\Entity\CellTypeEnum;
 use App\Entity\CellType;
@@ -40,7 +40,7 @@ use App\Entity\CellType;
  *
  * @package App\Entity
  */
-class BasicAlgorithm extends MapAlgorithm
+class BasicAlgorithm extends MapAlgorithmAbstract
 {
     /**
      * Hook timestampable behavior

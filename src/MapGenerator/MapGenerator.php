@@ -20,14 +20,18 @@
 
 namespace App\MapGenerator;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+
+use Gedmo\Timestampable\Traits\TimestampableEntity;
+
+use App\Entity\Map;
+use App\MapGenerator\Algorithm\MapAlgorithmAbstract;
+use App\Helpers\Generator\IslandNameGenerator;
 use App\Helpers\Navigator;
 use App\Helpers\Factories\CellTypeFactory;
-use Gedmo\Timestampable\Traits\TimestampableEntity;
-use App\Entity\Map;
-use App\MapGenerator\Algorithm\MapAlgorithm;
-use Symfony\Component\Validator\Constraints as Assert;
 
 
 class MapGenerator
@@ -43,35 +47,35 @@ class MapGenerator
 
     /**
      *
-     * @var MapAlgorithm
+     * @var MapAlgorithmAbstract
      */
     private $mapAlgorithm;
 
     /**
      *
      */
-    public function __construct(Map $map = null)
+    public function __construct()
     {
-        ;
+        $this->name = IslandNameGenerator::generate();
     }
 
     /**
      * Returns $mapAlgorithm
      *
-     * @return Null|MapAlgorithm
+     * @return Null|MapAlgorithmAbstract
      */
-    public function getMapAlgorithm(): ?MapAlgorithm
+    public function getMapAlgorithm(): ?MapAlgorithmAbstract
     {
         return $this->mapAlgorithm;
     }
 
     /**
      *
-     * @param MapAlgorithm $mapAlgorithm
+     * @param MapAlgorithmAbstract $mapAlgorithm
      *
      * @return self
      */
-    public function setMapAlgorithm(MapAlgorithm $mapAlgorithm): self
+    public function setMapAlgorithm(MapAlgorithmAbstract $mapAlgorithm): self
     {
         $this->mapAlgorithm = $mapAlgorithm;
     }
@@ -88,4 +92,24 @@ class MapGenerator
 
         return $this->map = $this->mapAlgorithm->getMap();
     }
+    /**
+     * Returns $name
+     *
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name)
+    {
+        $this->name = $name;
+    }
+
+
+
 }

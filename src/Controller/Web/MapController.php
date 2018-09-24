@@ -23,10 +23,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Map;
 use App\MapGenerator\MapGenerator;
-use App\Form\MapGeneratorType;
 use Symfony\Component\HttpFoundation\Request;
 use App\MapGenerator\Algorithm\TestAlgorithmOne;
 use App\MapGenerator\Algorithm\TestAlgorithmTwo;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
  * Class MapController
@@ -43,26 +43,10 @@ class MapController extends AbstractController
      */
     public function create(Request $request)
     {
-//         //$generator = new MapGenerator();
-
-//         //$form = $this->createForm(MapGeneratorType::class, $generator);
-
-//         $form->handleRequest($request);
-
-//         if ($form->isSubmitted() && $form->isValid()) {
-
-//             $map = $generator->generateMap();
-
-//             $entityManager = $this->getDoctrine()->getManager();
-//             $entityManager->persist($map);
-//             $entityManager->flush();
-
-//             return $this->redirectToRoute('web_map_show', ['map' => $map]);
-//         }
         return $this->render('map/create.html.twig', ['algorithms' => array (
             new TestAlgorithmOne(),
             new TestAlgorithmTwo(),
-        )]); //'form' => $form->createView()
+        )]);
     }
 
     /**
@@ -87,18 +71,4 @@ class MapController extends AbstractController
 
     }
 
-
-    /**
-     *
-     * @Route("/delete/{id}", name="delete")
-     */
-    public function delete(Map $map)
-    {
-        $manager = $this->getDoctrine()->getManager();
-        $manager->remove($map);
-        $manager->flush();
-
-        return $this->render('map/deleted.html.twig', ['map_id' => $map->getId()]);
-
-    }
 }

@@ -36,7 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @package App\Entity
  */
-class TestAlgorithmTwo extends MapAlgorithm
+class TestAlgorithmTwo extends MapAlgorithmAbstract
 {
 
     /**

@@ -1,13 +1,20 @@
 {% extends 'base.html.twig' %}
-
+    {% block stylesheets %}
+    	<link rel="stylesheet" href="{{ asset('css/map_previews.css') }}" />
+    {% endblock %}
+    
 {% block title %}Epocalypse Map Generator.{% endblock %}
 
 {% block body %}
     <h2>Map generator</h2>
     {{ include('partials/map_algortihm_selector.html.twig') }}
-    {#{{ form(form) }}#}
+    <div id="form_container"></div>
+    <div id="map_container"></div>
+    <div id="log_container"></div>
 {% endblock %}
 
 {% block javascripts_footer %}
+{{ parent() }}
 <script src="/public/js/map_algorithm_selector.js"></script>
+<script src="/public/js/map_algorithm_map_update.js"></script>
 {% endblock %}

@@ -1,0 +1,28 @@
+.cell {
+	/*border:1px dashed white;*/
+	
+}
+
+.water {
+	background-color: #125678;
+}
+
+.desert {
+	background-color: #c6b689;
+}
+
+.forest {
+	background-color: #337554;
+}
+
+.mountain {
+	background-color: #fefefe;
+}
+
+.plain {
+	background-color: #559745;
+}
+
+.unknown {
+	background-color: grey;
+}

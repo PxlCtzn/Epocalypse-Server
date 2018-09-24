@@ -26,6 +26,7 @@ use App\Helpers\Navigator;
 use App\Helpers\Factories\CellTypeFactory;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use App\Entity\Map;
+use App\Helpers\Generator\IslandNameGenerator;
 
 /**
  * Class BasicAlgorithm
@@ -35,7 +36,7 @@ use App\Entity\Map;
  *
  * @package App\Entity
  */
-abstract class MapAlgorithm
+abstract class MapAlgorithmAbstract
 {
     /**
      * Algorithm name
@@ -44,7 +45,6 @@ abstract class MapAlgorithm
      */
     protected $name;
 
-    protected $map;
     /**
      * Algorithm options
      * Array where each options is identified by a unique key
@@ -52,6 +52,10 @@ abstract class MapAlgorithm
      * @var array Algorithm options
      */
     protected $options;
+    /**
+     * @var string
+     */
+    protected $mapName;
 
     /**
      *
@@ -68,6 +72,7 @@ abstract class MapAlgorithm
     public function __construct(String $name)
     {
         $this->name = $name;
+        $this->mapName = IslandNameGenerator::generate();
     }
 
     protected abstract function preprocessing();
@@ -124,5 +129,58 @@ abstract class MapAlgorithm
     {
         $class = new \ReflectionClass($this);
         return $class->getShortName();
+    }
+    /**
+     * Returns $mapName
+     *
+     * @return string
+     */
+    public function getMapName(): string
+    {
+        return $this->mapName;
+    }
+
+    /**
+     * Returns $mapWidth
+     *
+     * @return number
+     */
+    public function getMapWidth(): int
+    {
+        return $this->mapWidth;
+    }
+
+    /**
+     * Returns $mapHeight
+     *
+     * @return number
+     */
+    public function getMapHeight(): int
+    {
+        return $this->mapHeight;
+    }
+
+    /**
+     * @param string $mapName
+     */
+    public function setMapName(string $mapName)
+    {
+        $this->mapName = $mapName;
+    }
+
+    /**
+     * @param number $mapWidth
+     */
+    public function setMapWidth(int $mapWidth)
+    {
+        $this->mapWidth = $mapWidth;
+    }
+
+    /**
+     * @param number $mapHeight
+     */
+    public function setMapHeight(int $mapHeight)
+    {
+        $this->mapHeight = $mapHeight;
     }
 }

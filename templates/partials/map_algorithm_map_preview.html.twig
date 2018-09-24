@@ -1,0 +1,11 @@
+<h3>Map</h3>
+{% spaceless %}
+    {% for lineIndex in 0..map.height-1 %}
+    	<div class="line" style="height:{{ size }}px;">
+        {% for columnIndex in 0..map.width-1 %}
+        	<span class="cell {{ map.getCell(lineIndex, columnIndex).type.name}}" style="min-width:{{ size }}px; display: inline-block; height: 100%;">
+        	</span>
+        {% endfor %}
+    	</div> {# Closing line #}
+    {% endfor %}
+{% endspaceless %}

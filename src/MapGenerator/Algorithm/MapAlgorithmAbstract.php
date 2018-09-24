@@ -29,8 +29,7 @@ use App\Entity\Map;
 use App\Helpers\Generator\IslandNameGenerator;
 
 /**
- * Class BasicAlgorithm
- *
+ * Class MapAlgorithmAbstract
  *
  * @author PxlCtzn
  *
@@ -45,34 +44,13 @@ abstract class MapAlgorithmAbstract
      */
     protected $name;
 
-    /**
-     * Algorithm options
-     * Array where each options is identified by a unique key
-     *
-     * @var array Algorithm options
-     */
-    protected $options;
-    /**
-     * @var string
-     */
-    protected $mapName;
-
-    /**
-     *
-     * @var int
-     */
-    protected $mapWidth;
-
-    /**
-     *
-     * @var int
-     */
-    protected $mapHeight;
+    protected $map;
 
     public function __construct(String $name)
     {
         $this->name = $name;
         $this->mapName = IslandNameGenerator::generate();
+        $map = new Map();
     }
 
     protected abstract function preprocessing();
@@ -106,23 +84,6 @@ abstract class MapAlgorithmAbstract
     public function setName($name)
     {
         $this->name = $name;
-    }
-    /**
-     * Returns $options
-     *
-     * @return array
-     */
-    public function getOptions(): array
-    {
-        return $this->options;
-    }
-
-    /**
-     * @param array $options
-     */
-    public function setOptions(array $options)
-    {
-        $this->options = $options;
     }
 
     public function getClassname()
@@ -166,10 +127,12 @@ abstract class MapAlgorithmAbstract
     public function setMapName(string $mapName)
     {
         $this->mapName = $mapName;
+
+        return $this;
     }
 
     /**
-     * @param number $mapWidth
+     * @param int $mapWidth
      */
     public function setMapWidth(int $mapWidth)
     {
@@ -177,10 +140,14 @@ abstract class MapAlgorithmAbstract
     }
 
     /**
-     * @param number $mapHeight
+     * @param int $mapHeight
+     *
+     * @return self
      */
-    public function setMapHeight(int $mapHeight)
+    public function setMapHeight(int $mapHeight): self
     {
         $this->mapHeight = $mapHeight;
+
+        return $this;
     }
 }

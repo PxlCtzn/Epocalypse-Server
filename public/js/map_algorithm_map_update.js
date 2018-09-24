@@ -38,9 +38,10 @@ document.addEventListener("DOMContentLoaded", function() {
 				.addEventListener("submit", updateMap, true);
 		
 		// We trigger the event to force the map update
-		document.getElementById('map_algorithm_form')
+		/*
+        document.getElementById('map_algorithm_form')
 				.submit(); 
-		
+		*/
 		// TODO : the function that will deal with the auto update feature.
 	};
 
@@ -54,7 +55,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function updateMap(event){
 	event.preventDefault();
-	
+    event.stopPropagation();
+
 	console.log("updateMap()");
 	
 	var form = document.getElementById("map_algorithm_form");

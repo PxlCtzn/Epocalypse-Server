@@ -31,14 +31,12 @@ use App\Entity\CellTypeEnum;
 use App\Entity\CellType;
 
 /**
- * Class Map
+ * Class BasicAlgorithm
  *
- *
- * @ORM\Entity(repositoryClass="App\Repository\MapRepository")
  *
  * @author PxlCtzn
  *
- * @package App\Entity
+ * @package App\MapGenerator\Algorithm
  */
 class BasicAlgorithm extends MapAlgorithmAbstract
 {
@@ -53,6 +51,11 @@ class BasicAlgorithm extends MapAlgorithmAbstract
      */
     private $seaThickness;
 
+    /**
+     * @var int Spread of the sea
+     */
+    private $seaSpread;
+
     private $waters = array();
 
     /**
@@ -65,7 +68,16 @@ class BasicAlgorithm extends MapAlgorithmAbstract
      */
     private $forests = array();
 
-    public function __construct(int $width, int $height, array $mountainPositions=array(),  int $seaThickness=1 )
+    /**
+     * BasicAlgorithm constructor.
+     *
+     * @param int   $width
+     * @param int   $height
+     * @param array $mountainPositions
+     * @param int   $seaThickness
+     * @param int   $seaSpread
+     */
+    public function __construct(int $width = 100, int $height = 100, array $mountainPositions=array(), int $seaThickness=1 , int $seaSpread = 3)
     {
         parent::__construct("Basic Algorithm");
 
@@ -404,4 +416,19 @@ class BasicAlgorithm extends MapAlgorithmAbstract
         return $this;
     }
 
+    /**
+     * @return int
+     */
+    public function getSeaSpread(): int
+    {
+        return $this->seaSpread;
+    }
+
+    /**
+     * @param int $seaSpread
+     */
+    public function setSeaSpread(int $seaSpread): void
+    {
+        $this->seaSpread = $seaSpread;
+    }
 }

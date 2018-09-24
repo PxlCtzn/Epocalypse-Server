@@ -15,6 +15,6 @@
 
 {% block javascripts_footer %}
 {{ parent() }}
-<script src="/public/js/map_algorithm_selector.js"></script>
-<script src="/public/js/map_algorithm_map_update.js"></script>
+<script src="{{ asset('js/map_algorithm_selector.js') }}"></script>
+<script src="{{ asset('js/map_algorithm_map_update.js') }}"></script>
 {% endblock %}

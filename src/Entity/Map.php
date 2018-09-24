@@ -91,9 +91,9 @@ class Map
     private $name;
 
 
-    public function __construct()
+    public function __construct(string $name ="")
     {
-        $this->name = "Map #".bin2hex(random_bytes(5));
+        $this->name = $name;
     }
 
     public function getId(): ?int

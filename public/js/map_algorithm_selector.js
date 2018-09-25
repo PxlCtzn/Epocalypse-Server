@@ -34,6 +34,10 @@ function updateForm(){
 	console.log("udpateForm()");
 	var selectorElement = document.getElementById('map_algorithm_selector');
 	var selectedValue = selectorElement.options[selectorElement.selectedIndex].value;
+	
+	if(selectedValue === "none")
+		return true;
+	
 	var endpoint = base_url + selectedValue;
 	console.log("End point : " + endpoint);
 

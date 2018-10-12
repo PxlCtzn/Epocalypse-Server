@@ -1,13 +1,8 @@
-# Epocalypse-Server
+# MapGenerator
 
-**_tl;dr_** : It is the Server side (_duh!_) of the Epocalypse game. 
+**_tl;dr_** : It generates 2D map !
 It's running under Symfony 4. 
 This project is under GPL v3 (get over it). 
-
-## Abstract
-**Epocalypse** is a Multiplayer HTML5 survival game. While the player's screen display fancy graphics and all, the server must take care of everything else (saving player's inventory, position, part of the map he/she discovered, his/her log and so on).
-
-The Epocalypse-Server will provides an API to play with so everyone can create his/her own GUI for the game. 
 
 ## Features
  * Generating random map
